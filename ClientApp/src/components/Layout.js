@@ -5,13 +5,10 @@ import NavBar from './NavBar';
 export class Layout extends Component {
   static displayName = Layout.name;
 
-  render () {
+  render() {
     return (
       <div>
-        <NavBar/>
-        <Container>
-          {this.props.children}
-        </Container>
+        {this.props.children}
       </div>
     );
   }

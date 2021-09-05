@@ -1,6 +1,10 @@
 import { alpha, makeStyles } from '@material-ui/core/styles';
 
 
+
+
+// NOT NEEDED BUT GOING TO KEEP AS A REFERENCE
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,

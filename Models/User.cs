@@ -12,22 +12,23 @@ namespace MessageBoard.Models
 		public string Password { get; set; }
 		public string Email { get; set; }
 		public string FirstName { get; set; }
+		public string Image { get; set; }
 		public string LastName { get; set; }
 		public Post[] Posts { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 
 		public User(string userName, string email, string password, string confirmPassword)
-        {
+		{
 			this.UserId = Guid.NewGuid();
 			this.UserName = userName;
 			this.Email = email;
 			// TODO: Confirm password
 			this.Password = password;
 			this.Posts = new Post[] { };
-        }
+		}
 		public User(string userName, string firstName, string lastName, string email, string password, string confirmPassword)
-        {
+		{
 			this.UserId = Guid.NewGuid();
 			this.UserName = userName;
 			this.FirstName = firstName;
@@ -36,7 +37,13 @@ namespace MessageBoard.Models
 			// TODO: Confirm password
 			this.Password = password;
 			this.Posts = new Post[] { };
-        }
+		}
+
+		// User login method.
+		public User(string userName, string pass)
+		{
+			// TODO: all the validation lmao
+		}
 
 	}
 

@@ -12,14 +12,15 @@ namespace MessageBoard.Controllers
 		[HttpGet("")]
 		public ActionResult<string> Index()
 		{
+			User user = new User("", "", "", "");
 			return "index";
 		}
 
 		[HttpPost("user")]
 		public ActionResult<User> CreateUser()
 		{
-
-			return new User("", "", "", "");
+			User user = new User("", "", "", "");
+			return user;
 		}
 	}
 }

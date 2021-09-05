@@ -7,15 +7,24 @@ import UserProfile from './components/User';
 
 
 import './custom.css'
+import NavBar from './components/NavBar';
+import { Container } from '@material-ui/core';
 
 export default class App extends Component {
   static displayName = App.name;
 
+  constructor(props) {
+    super(props);
+  }
+
   render () {
     return (
       <Layout>
-        <Route exact path='/' component={Home} />
-        <Route exact path='/profile/:userName' component={User} />
+        <Route component={NavBar}/>
+        <Container>
+          <Route exact path='/' component={Home} />
+          <Route exact path='/profile/:userName' component={User} />
+        </Container>
       </Layout>
     );
   }

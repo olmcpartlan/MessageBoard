@@ -24,7 +24,7 @@ const openComments = (postId, e) => {
   console.log(postId);
 }
 
-const Home = () => {
+const Home = (props) => {
   const classes = useStyles();
   let posts = [
     { 'postId': '12123', 'user': 'michael', 'body': 'i am beyonce always' }, 
@@ -33,7 +33,7 @@ const Home = () => {
 
   return <Container
     maxWidth="lg"
-    className="home-container">
+  >
     <h3>Home</h3>
     {posts.map((post, i) => {
       return <div key={i} className={classes.post}>
