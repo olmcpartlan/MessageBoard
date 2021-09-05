@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import Home from './components/Home';
+import User from './components/User';
 import UserProfile from './components/User';
+
 
 import './custom.css'
 
@@ -13,7 +15,7 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path='/' component={Home} />
-        <Route exact path='/user' component={UserProfile} />
+        <Route exact path='/profile/:userName' component={User} />
       </Layout>
     );
   }

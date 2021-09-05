@@ -19,10 +19,7 @@ namespace MessageBoard.Controllers
 		public ActionResult<User> CreateUser()
 		{
 
-			return new User()
-			{
-
-			};
+			return new User("", "", "", "");
 		}
 	}
 }

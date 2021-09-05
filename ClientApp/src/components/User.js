@@ -3,12 +3,12 @@ import { Button, Container } from '@material-ui/core';
 
 
 export default () => {
-  <Container
+  return <Container
     maxWidth="lg"
-    className="home-container">
-    <p>Home</p>
+    className="home-container"
+  >
+    <p>User</p>
     <Button color="primary">Button</Button>
-
   </Container>
 
 }
