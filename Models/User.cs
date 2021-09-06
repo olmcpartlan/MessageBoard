@@ -18,6 +18,7 @@ namespace MessageBoard.Models
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 
+		public User() { }
 		public User(string userName, string email, string password, string confirmPassword)
 		{
 			this.UserId = Guid.NewGuid();
@@ -32,7 +33,7 @@ namespace MessageBoard.Models
 			this.UserId = Guid.NewGuid();
 			this.UserName = userName;
 			this.FirstName = firstName;
-			this.LastName = LastName;
+			this.LastName = lastName;
 			this.Email = email;
 			// TODO: Confirm password
 			this.Password = password;

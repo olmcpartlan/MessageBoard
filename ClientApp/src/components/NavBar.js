@@ -29,7 +29,9 @@ const goToProfile = (userName, props) => {
 
 export default (props) => {
   const classes = useStyles();
-  let [userName, setUserName] = useState("");
+  let [userName, setUsername] = useState("");
+  let [pass, setPass] = useState("");
+  let [email, setEmail] = useState("");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -41,8 +43,49 @@ export default (props) => {
     setAnchorEl(null);
   };
 
+  // SEND THE INPUT FIELDS TO THE SERVER
+  const submitForm = e => {
+    e.preventDefault();
+    fetch("/api/users/login", 
+      {
+        method: 'POST',
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "UserName": userName,
+          "Password": pass
+        })
+      }
+    )
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+
+
+  const handleEmailChanged = e => {
+    fetch(`/api/users/email/${email}`)
+      .then(res => res.text())
+      .then(res => {
+        console.log(res);
+      })
+    setEmail(e.target.value);
+  }
+
+  const handlePassChange = e => {
+    setPass(e.target.value);
+  }
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+
 
   return (
     <div className={classes.root}>
@@ -87,18 +130,28 @@ export default (props) => {
           >
             <Grid container >
               {/* LOGIN FORM */}
-              <form>
+              <form onSubmit={submitForm}>
                 <Grid item>
-                  <TextField label="UserName" variant="filled" size="small" />
+                  <TextField 
+                    label="Email" 
+                    variant="filled" 
+                    size="small" 
+                    onChange={handleEmailChanged}
+                  />
                 </Grid>
                 <Grid item>
-                  <TextField label="Password" variant="filled" size="small" />
+                  <TextField
+                    label="Password"
+                    variant="filled"
+                    size="small"
+                    onChange={handlePassChange}
+                  />
                 </Grid>
 
                 <Grid item>
-                  <Button variant="contained" color="success">Login</Button>
-                  <label><b>OR </b></label>
-                  <Button variant="contained" color="success">Register</Button>
+                  <Button variant="contained" color="secondary" type="submit">Login</Button>
+                  <label> OR </label>
+                  <Button variant="contained" color="secondary" >Register</Button>
                 </Grid>
 
               </form>

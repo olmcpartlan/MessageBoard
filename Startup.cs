@@ -59,6 +59,7 @@ namespace MessageBoard
 
 			app.UseSpa(spa =>
 			{
+				// spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
 				spa.Options.SourcePath = "ClientApp";
 
 				if (env.IsDevelopment())

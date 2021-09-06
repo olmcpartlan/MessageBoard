@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Container, makeStyles } from '@material-ui/core';
+import { Button, ButtonBase, Container, makeStyles } from '@material-ui/core';
+import { FilterCenterFocusSharp } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,11 +25,12 @@ const openComments = (postId, e) => {
   console.log(postId);
 }
 
+
 const Home = (props) => {
   const classes = useStyles();
   let posts = [
     { 'postId': '12123', 'user': 'michael', 'body': 'i am beyonce always' }, 
-    // { 'postId': '32132', 'user': 'kevin', 'body': 'sometimes i run, i\'m a runner' }
+    { 'postId': '32132', 'user': 'kevin', 'body': 'sometimes i run, i\'m a runner' }
   ]
 
   return <Container
