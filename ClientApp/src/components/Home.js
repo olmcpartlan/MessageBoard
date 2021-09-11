@@ -30,7 +30,7 @@ const Home = (props) => {
   const classes = useStyles();
   let posts = [
     { 'postId': '12123', 'user': 'michael', 'body': 'i am beyonce always' }, 
-    { 'postId': '32132', 'user': 'kevin', 'body': 'sometimes i run, i\'m a runner' }
+    // { 'postId': '32132', 'user': 'kevin', 'body': 'sometimes i run, i\'m a runner' }
   ]
 
   return <Container

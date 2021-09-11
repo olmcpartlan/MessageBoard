@@ -13,47 +13,30 @@ const rootElement = document.getElementById('root');
 
 
 class ThemeWrapper extends Component {
-  state = {
-    theme1: {
-      palette: {
-        type: 'dark',
-        primary: { main: '#363636' },
-        secondary: { main: '#7f7f7f' },
+render() {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        // Purple and green play nicely together.
+        main: "#363636"
+      },
+      secondary: {
+        // This is green.A700 as hex.
+        main: '#11cb5f',
       },
     },
-    theme2: {
-      palette: {
-        type: 'dark',
-        primary: { main: '#363636' },
-        secondary: { main: '#7f7f7f' },
-      },
-    },
-    isThemeLight: false
-  }
-  onChange = () => {
-    this.setState = ({ isThemeLight: false })
-  }
-  onChangeTheme1 = () => {
-    this.setState(({ theme1 }) => ({
-      theme1: {
-        ...theme1,
-        primary: { main: 'red' },
-      }
-    }));
-  }
-  render() {
-    const { theme1, theme2, isThemeLight } = this.state;
-    return (
-      <BrowserRouter basename={baseUrl}>
-        <ThemeProvider
-          theme={isThemeLight ? createTheme(theme1) : createTheme(theme2)}
-        >
-          <App />
-        </ThemeProvider>
-      </BrowserRouter>
-    )
+  });
+  return (
+    <BrowserRouter basename={baseUrl}>
+      <ThemeProvider
+        theme={theme}
+      >
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
+  )
 
-  }
+}
 
 }
 

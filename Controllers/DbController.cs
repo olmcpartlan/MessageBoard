@@ -12,9 +12,14 @@ namespace MessageBoard.Controllers
 		public static string ConnectionString = "Server=localhost;Database=MessageBoard;Trusted_Connection=True;";
 
 		public static SqlConnection conn;
+		/// <summary>
+		/// Might implement this in the future, but don't want to deal with event hooks rn.
+		/// </summary>
+		/// <param name="email"></param>
+		/// <returns></returns>
 		public static bool CheckEmail(string email)
 		{
-			string emailQuery = "SELECT email FROM dbo.Users;";
+			string emailQuery = $"SELECT email FROM dbo.Users WHERE email='{email}';";
 
 			using (conn = new SqlConnection(ConnectionString))
 			{
@@ -22,12 +27,22 @@ namespace MessageBoard.Controllers
 				SqlCommand cmd = new SqlCommand(emailQuery, conn);
 
 
-
-				SqlDataReader reader = cmd.ExecuteReader();
-				while(reader.Read())
+				try
 				{
-					string foundEmail = reader.GetString(0);
-					Console.WriteLine();
+					SqlDataReader reader = cmd.ExecuteReader();
+					while (reader.Read())
+					{
+						string foundEmail = reader.GetString(0);
+						if(!foundEmail.Equals(""))
+						{
+							return true;
+						}
+					}
+
+				}
+				catch
+				{
+					Console.WriteLine("error");
 				}
 
 

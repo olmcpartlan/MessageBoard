@@ -28,7 +28,6 @@ namespace MessageBoard.Controllers
 		[HttpPost("login")]
 		public ActionResult<User> Login([FromBody] User userAttempt)
 		{
-			Console.WriteLine();
 			return userAttempt;
 		}
 	}

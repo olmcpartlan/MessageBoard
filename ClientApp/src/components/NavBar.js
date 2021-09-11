@@ -8,14 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Container, Grid, Input, TextField } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
@@ -43,10 +40,12 @@ export default (props) => {
     setAnchorEl(null);
   };
 
+
+
   // SEND THE INPUT FIELDS TO THE SERVER
   const submitForm = e => {
     e.preventDefault();
-    fetch("/api/users/login", 
+    fetch("/api/users/login",
       {
         method: 'POST',
         headers: {
@@ -68,20 +67,14 @@ export default (props) => {
       })
   }
 
-
-
-  const handleEmailChanged = e => {
-    fetch(`/api/users/email/${email}`)
-      .then(res => res.text())
-      .then(res => {
-        console.log(res);
-      })
-    setEmail(e.target.value);
+  const goHome = () => {
+    props.history.push("/")
   }
 
-  const handlePassChange = e => {
-    setPass(e.target.value);
+  const goToRegister = () => {
+    props.history.push("/register")
   }
+
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -94,23 +87,23 @@ export default (props) => {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} onClick={goHome}>
             Home
           </Typography>
-          { userName === ""
+          {userName === ""
             // LOGIN BUTTON
-            ? <Button 
-                color="inherit" 
-                onClick={handlePopover}
-              >
-                Login
-              </Button>
+            ? <Button
+              color="inherit"
+              onClick={handlePopover}
+            >
+              Login
+            </Button>
             // USER PROFILE BUTTON
-            : <Button 
-            onClick={(e) => goToProfile(userName, props)} 
-          >
-            {userName}
-          </Button>
+            : <Button
+              onClick={(e) => goToProfile(userName, props)}
+            >
+              {userName}
+            </Button>
 
           }
 
@@ -132,11 +125,11 @@ export default (props) => {
               {/* LOGIN FORM */}
               <form onSubmit={submitForm}>
                 <Grid item>
-                  <TextField 
-                    label="Email" 
-                    variant="filled" 
-                    size="small" 
-                    onChange={handleEmailChanged}
+                  <TextField
+                    label="Email"
+                    variant="filled"
+                    size="small"
+                  // onChange={handleEmailChanged}
                   />
                 </Grid>
                 <Grid item>
@@ -144,14 +137,26 @@ export default (props) => {
                     label="Password"
                     variant="filled"
                     size="small"
-                    onChange={handlePassChange}
+                  // onChange={handlePassChange}
                   />
                 </Grid>
 
                 <Grid item>
-                  <Button variant="contained" color="secondary" type="submit">Login</Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                  >
+                    Login
+                  </Button>
                   <label> OR </label>
-                  <Button variant="contained" color="secondary" >Register</Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={goToRegister}
+                  >
+                    Register
+                  </Button>
                 </Grid>
 
               </form>
