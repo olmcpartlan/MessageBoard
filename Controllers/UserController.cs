@@ -30,5 +30,27 @@ namespace MessageBoard.Controllers
 		{
 			return userAttempt;
 		}
+
+		[HttpPost("register")]
+		public ActionResult<User> Register([FromBody] User userFields)
+		{
+			User StagedUser = new User()
+			{
+				UserId = Guid.NewGuid(),
+				UserName = userFields.UserName,
+				Email = userFields.Email,
+				Password = Models.User.EncryptUserPass(userFields.Password),
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now,
+			};
+			
+			if(DbController.InsertUser(StagedUser)) return StagedUser;
+
+			return new User()
+			{
+				UserName = "an error occurred"
+			};
+
+		}
 	}
 }

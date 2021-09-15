@@ -46,6 +46,15 @@ namespace MessageBoard.Models
 			// TODO: all the validation lmao
 		}
 
+		public static string EncryptUserPass(string pass)
+		{
+			return BCrypt.Net.BCrypt.HashPassword(pass);
+		}
+		public static bool ValidateUserPass(string passAttempt, string passHash)
+		{
+			return  BCrypt.Net.BCrypt.Verify(passAttempt, passHash);
+		}
+
 	}
 
 

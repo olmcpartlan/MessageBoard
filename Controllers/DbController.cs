@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MessageBoard.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.SqlServer.Server;
@@ -49,6 +50,42 @@ namespace MessageBoard.Controllers
 			}
 
 			return false;
+		}
+
+
+		// This could be done using templates.. worth it? 
+		public static bool InsertUser(User u)
+		{
+
+			string emailQuery =
+				$@"
+					INSERT INTO		Users(UserId, UserName, Pass, Email, CreatedAt, UpdatedAt)
+									VALUES(
+										'{u.UserId}', '{u.UserName}', 
+										'{u.Password}', '{u.Email}', 
+										'{u.CreatedAt}', '{u.UpdatedAt}')
+				";
+
+
+			using (conn = new SqlConnection(ConnectionString))
+			{
+				conn.Open();
+				SqlCommand cmd = new SqlCommand(emailQuery, conn);
+
+
+				try
+				{
+					return Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+					return false;
+				}
+
+
+			}
 
 		}
 	}

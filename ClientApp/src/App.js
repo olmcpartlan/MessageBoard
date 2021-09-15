@@ -24,7 +24,7 @@ export default class App extends Component {
         <Route component={NavBar}/>
         <Container>
           <Route exact path='/' component={Home} />
-          <Route exact path='/profile/:userName' component={User} />
+          <Route exact path='/profile/:userId' component={User} />
           <Route exact path='/register' component={Register} />
         </Container>
       </Layout>
