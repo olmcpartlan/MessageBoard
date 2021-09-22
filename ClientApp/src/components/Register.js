@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, makeStyles, Button, InputLabel, Paper, FormControl } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import { FilterCenterFocusSharp } from '@material-ui/icons';
 
 
 
@@ -44,15 +45,41 @@ const submitRequiredForm = (e, userName, email, pass, confPass, setRequiredFormV
         // Add the new user object to state.
         setUserFields(res);
       })
-      .then(setRequiredFormVisible())
+      .then(res => {
+        window.sessionStorage.setItem('userId', res["userId"])
+        setRequiredFormVisible()
+      })
       .catch(err => console.log(err))
   }
 }
 
 
-const submitOptionalForm = (e, userName, email, pass, userId, props) => {
+const submitOptionalForm = (e, firstName, lastName, userId, props) => {
   e.preventDefault();
-  props.history.push(`/profile/${userId}`)
+  // No need to send the request if the user did not fill out the field(s).
+  if(firstName === "" && lastName === "") {
+    props.history.push(`/profile/${userId}`)
+  }
+  else {
+    fetch("/api/users/optional", {
+      method: "POST",
+      body: JSON.stringify({
+        "UserId": userId,
+        "FirstName": firstName,
+        "LastName": lastName
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        props.history.push(`/profile/${userId}`);
+      })
+
+  }
+
 
 
 }
@@ -92,7 +119,7 @@ export default (props) => {
     <Grid container>
       <Grid container xs={6}>
         {showRequiredForm
-          ? <RequiredForm setVisible={setShowRequiredForm} setUserFields={setUser}/>
+          ? <RequiredForm setVisible={setShowRequiredForm} setUserFields={setUser} />
           : <OptionalForm history={props.history} userName={user['userName']} userId={user['userId']}/>
 
         }
@@ -178,17 +205,37 @@ const RequiredForm = (props) => {
 }
 
 
+const handleFirstNameChange = (e, setFirstName) => {
+  setFirstName(e.target.value);
+}
+
+const handleLastNameChange = (e, setLastName) => {
+  setLastName(e.target.value);
+
+}
+
+// TODO: Image Uploading
+/*
+const handleUploadImageChange = (e, setImage) => {
+  const formData = new FormData();
+  formData.append('file', e.target.files[0]);
+  console.log(formData);
+
+  fetch("/api/users/upload")
+}
+*/
+
 const OptionalForm = (props) => {
   const classes = useStyles(props);
 
   let [userName, setUserName] = useState("");
   let [email, setEmail] = useState("");
+  // let [imageUrl, setImageUrl] = useState("");
   let [pass, setPass] = useState("");
-
 
   return (
     <Grid item xs={12}>
-      <form onSubmit={(e) => submitOptionalForm(e, userName, email, pass, props.userId, props)}>
+      <form onSubmit={(e) => submitOptionalForm(e, userName, email, props.userId, props)}>
         <Paper className={classes.paper}>
           <label>Hello, {props.userName}!</label>
           <label>To create a personalized experience, please fill out these remaining fields.</label>
@@ -197,16 +244,30 @@ const OptionalForm = (props) => {
           <Grid item>
             <TextField
               label="FirstName"
-              onChange={(e) => handleUserNameChange(e, setUserName)}
+              onChange={(e) => handleFirstNameChange(e, setUserName)}
             />
           </Grid>
           <Grid item>
             {/* EMAIL */}
             <TextField
               label="Last Name"
-              onChange={(e) => handleEmailChange(e, setEmail)}
+              onChange={(e) => handleLastNameChange(e, setEmail)}
             />
           </Grid>
+          {/* <Grid item>
+            <Button
+            Button
+            variant="contained"
+            component="label"
+            >
+              Upload File
+              <input
+                type="file"
+                onChange={(e) => handleUploadImageChange(e, setImageUrl)}
+                hidden
+              />
+            </Button>
+          </Grid> */}
           <Grid container justifyContent="center">
             <Grid item>
               <Button type="submit" color="primary">submit</Button>

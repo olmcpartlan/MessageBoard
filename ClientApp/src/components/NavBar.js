@@ -41,7 +41,6 @@ export default (props) => {
   };
 
 
-
   // SEND THE INPUT FIELDS TO THE SERVER
   const submitForm = e => {
     e.preventDefault();

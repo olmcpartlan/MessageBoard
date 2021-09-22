@@ -5,10 +5,10 @@ import { useHistory, useRouteMatch } from 'react-router';
 
 export default (props) => {
 
-  // Use this to call the initial "onLoad" event to the db.
-  let params = props.match.params.userName;
 
-  let match = useRouteMatch("/");
+  // Actaul user id.
+  console.log(props.match.params.userId);
+
 
   return <Container
     maxWidth="lg"

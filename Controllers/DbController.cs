@@ -52,7 +52,6 @@ namespace MessageBoard.Controllers
 			return false;
 		}
 
-
 		// This could be done using templates.. worth it? 
 		public static bool InsertUser(User u)
 		{
@@ -85,6 +84,33 @@ namespace MessageBoard.Controllers
 				}
 
 
+			}
+
+		}
+
+		public static bool UpdateOptionalFields(string firstName, string lastName, Guid userId)
+		{
+
+			string updateQuery =  
+				$@"UPDATE Users SET FirstName='{firstName}', LastName='{lastName}' WHERE UserId='{userId}'";
+			
+
+
+			using (conn = new SqlConnection(ConnectionString))
+			{
+				conn.Open();
+				SqlCommand cmd = new SqlCommand(updateQuery, conn);
+
+
+				try
+				{
+					return Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+				}
+				catch (Exception e)
+				{
+					return false;
+				}
 			}
 
 		}

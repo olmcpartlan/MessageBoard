@@ -50,7 +50,22 @@ namespace MessageBoard.Controllers
 			{
 				UserName = "an error occurred"
 			};
+		}
 
+		[HttpPost("upload")]
+		public ActionResult<bool> UploadImage([FromBody] object file)
+		{
+
+			Console.WriteLine();
+
+			return true;
+		}
+
+		[HttpPost("optional")]
+		public ActionResult<bool> OptionalFields([FromBody] User user)
+		{
+			// Append the optional fields to the new user.
+			return DbController.UpdateOptionalFields(user.FirstName, user.LastName, user.UserId);
 		}
 	}
 }
