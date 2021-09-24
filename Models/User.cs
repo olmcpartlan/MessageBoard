@@ -19,7 +19,7 @@ namespace MessageBoard.Models
 		public DateTime UpdatedAt { get; set; }
 
 		public User() { }
-		public User(string userName, string email, string password, string confirmPassword)
+		public User(string userName, string email, string password)
 		{
 			this.UserId = Guid.NewGuid();
 			this.UserName = userName;
@@ -28,15 +28,15 @@ namespace MessageBoard.Models
 			this.Password = password;
 			this.Posts = new Post[] { };
 		}
-		public User(string userName, string firstName, string lastName, string email, string password, string confirmPassword)
+
+		// Used to set the user fields after the login matches.
+		public User(string userName, string firstName, string lastName, string email, Guid userId)
 		{
-			this.UserId = Guid.NewGuid();
+			this.UserId = userId;
 			this.UserName = userName;
 			this.FirstName = firstName;
 			this.LastName = lastName;
 			this.Email = email;
-			// TODO: Confirm password
-			this.Password = password;
 			this.Posts = new Post[] { };
 		}
 

@@ -9,10 +9,12 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { Grid, TextField } from '@material-ui/core';
+import { validateLocaleAndSetLanguage } from 'typescript';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    color: 'red'
   },
   title: {
     flexGrow: 1,
@@ -20,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const goToProfile = (userName, props) => {
-  props.history.push(`/profile/${userName}`)
+const goToProfile = (userId, props) => {
+  props.history.push(`/profile/${userId}`)
 }
 
 export default (props) => {
@@ -29,6 +31,7 @@ export default (props) => {
   let [userName, setUsername] = useState("");
   let [pass, setPass] = useState("");
   let [email, setEmail] = useState("");
+  let [loginValidation, setLoginValidation] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -44,6 +47,17 @@ export default (props) => {
   // SEND THE INPUT FIELDS TO THE SERVER
   const submitForm = e => {
     e.preventDefault();
+
+    // The user can login with their email or username.
+    let fieldName = userName.includes("@") ? "Email" : "UserName";
+
+    let body = JSON.stringify({
+      [fieldName]: userName,
+      "Password": pass
+    });
+
+    console.log(body);
+
     fetch("/api/users/login",
       {
         method: 'POST',
@@ -51,15 +65,22 @@ export default (props) => {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          "UserName": userName,
-          "Password": pass
-        })
+        body: body
       }
     )
       .then(res => res.json())
       .then(res => {
         console.log(res);
+        if(res["userName"] === undefined || res["email"] === undefined) {
+          setLoginValidation(true);
+        }
+        else {
+          setLoginValidation(false);
+          handleClose();
+          window.sessionStorage.setItem("userName", res["userName"])
+          window.sessionStorage.setItem('userId', res["userId"])
+          props.history.push(`/profile/${res["userId"]}`)
+        }
       })
       .catch(err => {
         console.log(err);
@@ -71,13 +92,23 @@ export default (props) => {
   }
 
   const goToRegister = () => {
+    handleClose();
     props.history.push("/register")
+  }
+
+  const handleEmailChanged = (e, setEmail) => {
+    setEmail(e.target.value);
+  }
+
+  const handlePassChange = (e, setPass) => {
+    setPass(e.target.value);
   }
 
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
+  let sessionUserName = window.sessionStorage.getItem("userName")
 
   return (
     <div className={classes.root}>
@@ -89,7 +120,7 @@ export default (props) => {
           <Typography variant="h6" className={classes.title} onClick={goHome}>
             Home
           </Typography>
-          {userName === ""
+          {sessionUserName === null
             // LOGIN BUTTON
             ? <Button
               color="inherit"
@@ -99,9 +130,9 @@ export default (props) => {
             </Button>
             // USER PROFILE BUTTON
             : <Button
-              onClick={(e) => goToProfile(userName, props)}
+              onClick={(e) => goToProfile(sessionUserName, props)}
             >
-              {userName}
+              {sessionUserName}
             </Button>
 
           }
@@ -123,27 +154,33 @@ export default (props) => {
             <Grid container >
               {/* LOGIN FORM */}
               <form onSubmit={submitForm}>
+                {/* USERNAME / EMAIL */}
                 <Grid item>
                   <TextField
-                    label="Email"
+                    label="UserName"
                     variant="filled"
                     size="small"
-                  // onChange={handleEmailChanged}
+                    error={loginValidation}
+                    helperText={loginValidation && "Login information was not found."}
+                    required={true}
+                    onChange={(e) => handleEmailChanged(e, setUsername)}
                   />
                 </Grid>
                 <Grid item>
+                  {/* PASSWORD */}
                   <TextField
                     label="Password"
                     variant="filled"
                     size="small"
-                  // onChange={handlePassChange}
+                    required={true}
+                    onChange={(e) => handlePassChange(e, setPass)}
                   />
                 </Grid>
 
                 <Grid item>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     type="submit"
                   >
                     Login

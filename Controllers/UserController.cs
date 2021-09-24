@@ -11,12 +11,6 @@ namespace MessageBoard.Controllers
 	[ApiController]
 	public class UserController : Controller
 	{
-		[HttpPost("create")]
-		public ActionResult<User> CreateUser()
-		{
-			User user = new User("", "", "", "");
-			return user;
-		}
 
 		[HttpGet("email/{emailAttempt}")]
 		public ActionResult<bool> ValidateEmail(string emailAttempt)
@@ -28,7 +22,9 @@ namespace MessageBoard.Controllers
 		[HttpPost("login")]
 		public ActionResult<User> Login([FromBody] User userAttempt)
 		{
-			return userAttempt;
+			return DbController.CheckUser(userAttempt.Email, userAttempt.UserName, userAttempt.Password);
+
+
 		}
 
 		[HttpPost("register")]

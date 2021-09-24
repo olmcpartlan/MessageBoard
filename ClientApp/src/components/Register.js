@@ -250,7 +250,7 @@ const OptionalForm = (props) => {
           <Grid item>
             {/* EMAIL */}
             <TextField
-              label="Last Name"
+              label="LastName"
               onChange={(e) => handleLastNameChange(e, setEmail)}
             />
           </Grid>

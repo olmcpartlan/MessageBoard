@@ -36,6 +36,7 @@ namespace MessageBoard.Controllers
 						string foundEmail = reader.GetString(0);
 						if(!foundEmail.Equals(""))
 						{
+							conn.Close();
 							return true;
 						}
 					}
@@ -74,6 +75,7 @@ namespace MessageBoard.Controllers
 
 				try
 				{
+					conn.Close();
 					return Convert.ToBoolean(cmd.ExecuteNonQuery());
 
 				}
@@ -112,6 +114,51 @@ namespace MessageBoard.Controllers
 					return false;
 				}
 			}
+
+		}
+		public static User CheckUser(string email, string userName, string pass)
+		{
+			string selectQuery = "";
+			if(email != null)	selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE Email='{email}';";
+			else				selectQuery = $"SELECT Pass FROM Users WHERE UserName='{userName}'";
+
+
+			using(conn = new SqlConnection(ConnectionString))
+			{
+				conn.Open();
+				SqlCommand cmd = new SqlCommand(selectQuery, conn);
+				try
+				{
+					SqlDataReader reader = cmd.ExecuteReader();
+					while (reader.Read())
+					{
+						string foundPass = reader.GetString(0);
+						// If the query was able to find a user.
+						if (!foundPass.Equals(""))
+						{
+							if(BCrypt.Net.BCrypt.Verify(pass, foundPass))
+							{
+								return new User(reader.GetString(2), 
+									reader.GetString(4), 
+									reader.GetString(5), 
+									reader.GetString(3), 
+									reader.GetGuid(1)
+									);
+							}
+							return new User();
+						}
+					}
+
+				}
+				catch(Exception e)
+				{
+					Console.WriteLine(e.Message);
+					Console.WriteLine();
+				}
+
+
+			}
+			return new User();
 
 		}
 	}
