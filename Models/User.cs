@@ -15,8 +15,8 @@ namespace MessageBoard.Models
 		public string Image { get; set; }
 		public string LastName { get; set; }
 		public Post[] Posts { get; set; }
-		public DateTime CreatedAt { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? CreatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 
 		public User() { }
 		public User(string userName, string email, string password)

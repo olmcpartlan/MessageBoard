@@ -16,6 +16,13 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+/*
+  TODO: validate user email isn't in db.
+        LOOK OVER THE setHandler{field} HANDLERS IN REQUIRED
+
+*/
+
+
 const submitRequiredForm = (e, userName, email, pass, confPass, setRequiredFormVisible, setUserFields) => {
   e.preventDefault();
   // Form is showing an invalid field, but submit is called anyway. 
@@ -44,8 +51,9 @@ const submitRequiredForm = (e, userName, email, pass, confPass, setRequiredFormV
         // After a successful response from the server,
         // Add the new user object to state.
         setUserFields(res);
-      })
-      .then(res => {
+        console.log("USERID");
+        console.log(res["userId"]);
+        window.sessionStorage.setItem("userName", res["userName"])
         window.sessionStorage.setItem('userId', res["userId"])
         setRequiredFormVisible()
       })

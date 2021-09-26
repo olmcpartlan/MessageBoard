@@ -70,14 +70,17 @@ export default (props) => {
     )
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        console.log(res)
         if(res["userName"] === undefined || res["email"] === undefined) {
           setLoginValidation(true);
         }
         else {
           setLoginValidation(false);
           handleClose();
-          window.sessionStorage.setItem("userName", res["userName"])
+          window.sessionStorage.setItem("userName", 
+          // Determine which field to pull depending on which auth method was used in login.
+            res["userName"] = res["userName"].includes("@") ? res["email"] : res["userName"]
+          )
           window.sessionStorage.setItem('userId', res["userId"])
           props.history.push(`/profile/${res["userId"]}`)
         }
@@ -109,6 +112,7 @@ export default (props) => {
   const id = open ? 'simple-popover' : undefined;
 
   let sessionUserName = window.sessionStorage.getItem("userName")
+  let sessionUserId = window.sessionStorage.getItem("userId")
 
   return (
     <div className={classes.root}>
@@ -130,7 +134,7 @@ export default (props) => {
             </Button>
             // USER PROFILE BUTTON
             : <Button
-              onClick={(e) => goToProfile(sessionUserName, props)}
+              onClick={(e) => goToProfile(sessionUserId, props)}
             >
               {sessionUserName}
             </Button>

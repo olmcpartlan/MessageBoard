@@ -36,7 +36,6 @@ namespace MessageBoard.Controllers
 						string foundEmail = reader.GetString(0);
 						if(!foundEmail.Equals(""))
 						{
-							conn.Close();
 							return true;
 						}
 					}
@@ -47,6 +46,10 @@ namespace MessageBoard.Controllers
 					Console.WriteLine("error");
 				}
 
+				finally
+				{
+					conn.Close();
+				}
 
 			}
 
@@ -69,13 +72,14 @@ namespace MessageBoard.Controllers
 
 			using (conn = new SqlConnection(ConnectionString))
 			{
+
 				conn.Open();
+
 				SqlCommand cmd = new SqlCommand(emailQuery, conn);
 
 
 				try
 				{
-					conn.Close();
 					return Convert.ToBoolean(cmd.ExecuteNonQuery());
 
 				}
@@ -83,6 +87,11 @@ namespace MessageBoard.Controllers
 				{
 					Console.WriteLine(e.Message);
 					return false;
+				}
+				finally
+				{
+					conn.Close();
+
 				}
 
 
@@ -113,14 +122,21 @@ namespace MessageBoard.Controllers
 				{
 					return false;
 				}
+				finally
+				{
+					conn.Close();
+
+				}
 			}
 
 		}
 		public static User CheckUser(string email, string userName, string pass)
 		{
 			string selectQuery = "";
+			// In the frontend, the user can choose if they want to login with email / username
+			// Determined by input.includes("@")
 			if(email != null)	selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE Email='{email}';";
-			else				selectQuery = $"SELECT Pass FROM Users WHERE UserName='{userName}'";
+			else				selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE UserName='{userName}'";
 
 
 			using(conn = new SqlConnection(ConnectionString))
@@ -155,10 +171,64 @@ namespace MessageBoard.Controllers
 					Console.WriteLine(e.Message);
 					Console.WriteLine();
 				}
+				finally
+				{
+					conn.Close();
+				}
 
 
 			}
 			return new User();
+
+		}
+
+		public static User Finduser(Guid id)
+		{
+			string selectQuery = $"SELECT * FROM users WHERE UserId='{id}'";
+
+
+			using(conn = new SqlConnection(ConnectionString))
+			{
+				conn.Open();
+				SqlCommand cmd = new SqlCommand(selectQuery, conn);
+				try
+				{
+					SqlDataReader reader = cmd.ExecuteReader();
+
+					User user = new User()
+					{
+						// UserId = reader.GetGuid(0),
+						UserName = reader.IsDBNull(1) ? "" : reader.GetString(1),
+						Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
+						FirstName = reader.IsDBNull(4) ? "" : reader.GetString(4),
+
+						LastName = reader.IsDBNull(5) ? "" : reader.GetString(5),
+
+						CreatedAt = reader.IsDBNull(6) ? null : (DateTime?)reader.GetDateTime(6),
+
+						// TODO: going to need to add posts here sometime soon.
+						UpdatedAt = reader.IsDBNull(7) ? null : (DateTime?)reader.GetDateTime(7),
+
+					};
+
+					return user;
+
+				}
+
+				catch(Exception e)
+				{
+					Console.WriteLine(e.Message);
+					Console.WriteLine();
+				}
+				finally
+				{
+					conn.Close();
+				}
+
+				return new User();
+
+
+			}
 
 		}
 	}

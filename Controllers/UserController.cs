@@ -24,7 +24,6 @@ namespace MessageBoard.Controllers
 		{
 			return DbController.CheckUser(userAttempt.Email, userAttempt.UserName, userAttempt.Password);
 
-
 		}
 
 		[HttpPost("register")]
@@ -47,6 +46,14 @@ namespace MessageBoard.Controllers
 				UserName = "an error occurred"
 			};
 		}
+
+		[HttpGet("user/{id}")]
+		public ActionResult<User> GetUser(Guid id)
+		{
+			return DbController.Finduser(id);
+		}
+
+
 
 		[HttpPost("upload")]
 		public ActionResult<bool> UploadImage([FromBody] object file)
