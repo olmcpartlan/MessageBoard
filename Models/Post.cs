@@ -8,7 +8,7 @@ namespace MessageBoard.Models
     public class Post
     {
         public Guid PostId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid PostedById { get; set; }
         public string Body { get; set; }
         public Comment[] Comments { get; set; }
         public DateTime CreatedAt { get; set; }

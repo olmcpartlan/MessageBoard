@@ -50,9 +50,18 @@ namespace MessageBoard.Controllers
 		[HttpGet("user/{id}")]
 		public ActionResult<User> GetUser(Guid id)
 		{
-			return DbController.Finduser(id);
+			User foundUser = DbController.Finduser(id);
+			foundUser.Posts = DbController.FindUserPosts(id);
+
+			return foundUser;
 		}
 
+
+		public void CreatePost()
+		{
+			string query = " INSERT INTO Posts(PostId, Body, PostedById, CreatedAt, UpdatedAt) VALUES(NEWID(), 'i am beyonce always', '694000A0-B77C-4254-94E9-1FD274A54AC1', GETDATE(), GETDATE());";
+
+		}
 
 
 		[HttpPost("upload")]

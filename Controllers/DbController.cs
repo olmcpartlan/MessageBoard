@@ -34,7 +34,7 @@ namespace MessageBoard.Controllers
 					while (reader.Read())
 					{
 						string foundEmail = reader.GetString(0);
-						if(!foundEmail.Equals(""))
+						if (!foundEmail.Equals(""))
 						{
 							return true;
 						}
@@ -102,9 +102,9 @@ namespace MessageBoard.Controllers
 		public static bool UpdateOptionalFields(string firstName, string lastName, Guid userId)
 		{
 
-			string updateQuery =  
+			string updateQuery =
 				$@"UPDATE Users SET FirstName='{firstName}', LastName='{lastName}' WHERE UserId='{userId}'";
-			
+
 
 
 			using (conn = new SqlConnection(ConnectionString))
@@ -135,11 +135,11 @@ namespace MessageBoard.Controllers
 			string selectQuery = "";
 			// In the frontend, the user can choose if they want to login with email / username
 			// Determined by input.includes("@")
-			if(email != null)	selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE Email='{email}';";
-			else				selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE UserName='{userName}'";
+			if (email != null) selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE Email='{email}';";
+			else selectQuery = $"SELECT Pass, UserId, UserName, Email, FirstName, LastName FROM Users WHERE UserName='{userName}'";
 
 
-			using(conn = new SqlConnection(ConnectionString))
+			using (conn = new SqlConnection(ConnectionString))
 			{
 				conn.Open();
 				SqlCommand cmd = new SqlCommand(selectQuery, conn);
@@ -152,12 +152,12 @@ namespace MessageBoard.Controllers
 						// If the query was able to find a user.
 						if (!foundPass.Equals(""))
 						{
-							if(BCrypt.Net.BCrypt.Verify(pass, foundPass))
+							if (BCrypt.Net.BCrypt.Verify(pass, foundPass))
 							{
-								return new User(reader.GetString(2), 
-									reader.GetString(4), 
-									reader.GetString(5), 
-									reader.GetString(3), 
+								return new User(reader.GetString(2),
+									reader.GetString(4),
+									reader.GetString(5),
+									reader.GetString(3),
 									reader.GetGuid(1)
 									);
 							}
@@ -166,7 +166,7 @@ namespace MessageBoard.Controllers
 					}
 
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Console.WriteLine(e.Message);
 					Console.WriteLine();
@@ -184,10 +184,18 @@ namespace MessageBoard.Controllers
 
 		public static User Finduser(Guid id)
 		{
-			string selectQuery = $"SELECT * FROM users WHERE UserId='{id}'";
+			string selectQuery = @$"SELECT 
+										UserId, 
+										UserName,
+										Email,
+										FirstName,
+										LastName,
+										CreatedAt, 
+										UpdatedAt,
+									FROM users WHERE UserId='{id}'";
 
 
-			using(conn = new SqlConnection(ConnectionString))
+			using (conn = new SqlConnection(ConnectionString))
 			{
 				conn.Open();
 				SqlCommand cmd = new SqlCommand(selectQuery, conn);
@@ -197,25 +205,27 @@ namespace MessageBoard.Controllers
 
 					User user = new User()
 					{
-						// UserId = reader.GetGuid(0),
+						UserId = reader.IsDBNull(0) ? new Guid() : reader.GetGuid(0),
 						UserName = reader.IsDBNull(1) ? "" : reader.GetString(1),
-						Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
-						FirstName = reader.IsDBNull(4) ? "" : reader.GetString(4),
+						Email = reader.IsDBNull(2) ? "" : reader.GetString(3),
+						FirstName = reader.IsDBNull(3) ? "" : reader.GetString(4),
 
-						LastName = reader.IsDBNull(5) ? "" : reader.GetString(5),
+						LastName = reader.IsDBNull(4) ? "" : reader.GetString(5),
 
-						CreatedAt = reader.IsDBNull(6) ? null : (DateTime?)reader.GetDateTime(6),
+						CreatedAt = reader.IsDBNull(5) ? null : (DateTime?)reader.GetDateTime(6),
 
 						// TODO: going to need to add posts here sometime soon.
-						UpdatedAt = reader.IsDBNull(7) ? null : (DateTime?)reader.GetDateTime(7),
+						UpdatedAt = reader.IsDBNull(6) ? null : (DateTime?)reader.GetDateTime(7),
 
 					};
+
+					Console.WriteLine();
 
 					return user;
 
 				}
 
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Console.WriteLine(e.Message);
 					Console.WriteLine();
@@ -226,6 +236,51 @@ namespace MessageBoard.Controllers
 				}
 
 				return new User();
+
+
+			}
+
+		}
+
+		public static Post[] FindUserPosts(Guid id)
+		{
+			string query = $"SELECT PostId, Body, PostedById, CreatedAt, UpdatedAt FROM Posts WHERE PostedById='{id}'";
+			using (conn = new SqlConnection(ConnectionString))
+			{
+				conn.Open();
+				List<Post> foundPosts = new List<Post>();
+				SqlCommand cmd = new SqlCommand(query, conn);
+				try
+				{
+					SqlDataReader reader = cmd.ExecuteReader();
+					while (reader.Read())
+					{
+						foundPosts.Add(new Post()
+						{
+							PostId = reader.GetGuid(0) == null ? new Guid() : reader.GetGuid(0),
+							Body = reader.GetString(1) == "" ? null : reader.GetString(1),
+							PostedById = reader.GetGuid(2) == null ? new Guid() : reader.GetGuid(2),
+							CreatedAt = reader.GetDateTime(3),
+							UpdatedAt = reader.GetDateTime(4),
+
+						});
+					}
+
+						return foundPosts.ToArray();
+
+				}
+
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+					Console.WriteLine();
+				}
+				finally
+				{
+					conn.Close();
+				}
+
+				return new Post[] { };
 
 
 			}
