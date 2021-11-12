@@ -16,13 +16,13 @@ namespace MessageBoard.Controllers
 		public ActionResult<bool> ValidateEmail(string emailAttempt)
 		{
 			// Query db to check if the email input is already connected to an account.
-			return DbController.CheckEmail(emailAttempt);
+			return Models.User.CheckEmail(emailAttempt);
 		}
 
 		[HttpPost("login")]
 		public ActionResult<User> Login([FromBody] User userAttempt)
 		{
-			return DbController.CheckUser(userAttempt.Email, userAttempt.UserName, userAttempt.Password);
+			return Models.User.CheckUser(userAttempt.Email, userAttempt.UserName, userAttempt.Password);
 
 		}
 
@@ -39,7 +39,7 @@ namespace MessageBoard.Controllers
 				UpdatedAt = DateTime.Now,
 			};
 			
-			if(DbController.InsertUser(StagedUser)) return StagedUser;
+			if(Models.User.InsertUser(StagedUser)) return StagedUser;
 
 			return new User()
 			{
@@ -47,21 +47,7 @@ namespace MessageBoard.Controllers
 			};
 		}
 
-		[HttpGet("user/{id}")]
-		public ActionResult<User> GetUser(Guid id)
-		{
-			User foundUser = DbController.Finduser(id);
-			foundUser.Posts = DbController.FindUserPosts(id);
 
-			return foundUser;
-		}
-
-
-		public void CreatePost()
-		{
-			string query = " INSERT INTO Posts(PostId, Body, PostedById, CreatedAt, UpdatedAt) VALUES(NEWID(), 'i am beyonce always', '694000A0-B77C-4254-94E9-1FD274A54AC1', GETDATE(), GETDATE());";
-
-		}
 
 
 		[HttpPost("upload")]
@@ -77,7 +63,7 @@ namespace MessageBoard.Controllers
 		public ActionResult<bool> OptionalFields([FromBody] User user)
 		{
 			// Append the optional fields to the new user.
-			return DbController.UpdateOptionalFields(user.FirstName, user.LastName, user.UserId);
+			return Models.User.UpdateOptionalFields(user.FirstName, user.LastName, user.UserId);
 		}
 	}
 }
